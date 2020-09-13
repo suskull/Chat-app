@@ -19,8 +19,16 @@ app.use(express.static(publicDirectoryPath))
 //---------------------------------------------
 let count = 0;
 io.on('connection', (socket) => {
-    socket.emit('message', generateMessage('Wellcome'))
-    socket.broadcast.emit('message', generateMessage('An user have joined'))
+    debugger
+    socket.on('join', ({username,room}) => {
+      
+        socket.join(room)
+
+        console.log(username, room);
+        socket.emit('message', generateMessage('Wellcome'))
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined the room`))
+    })
+   
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter();
